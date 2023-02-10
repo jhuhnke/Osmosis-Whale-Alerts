@@ -53,4 +53,6 @@ Solana address: 2L6j3wZXEByg8jycytabZitDh9VVMhKiMYv7EeJh6R2H
 
 ## License :checkered_flag:
 
+This bot is licensed using an MIT license. 
+
 Please include attribution to this repo if you fork or modify this repo in your own project. Thanks!
