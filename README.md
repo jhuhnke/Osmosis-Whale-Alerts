@@ -17,6 +17,14 @@ To access the Flipside Crypto dataset, you will need a [ShroomDK API Key](https:
 
 This bot requires a Twitter Developer Account with Elevated Access. To request elevated access, first create the Twitter account you wish to send the tweets and request elevated access through the [Twitter Developer Portal](https://apps.twitter.com/). Once your access has been approved, create a new application on the Twitter developer portal and generate a consumer key and consumer secret.  
 
+## Files :floppy_disk:
+
+There are two different Twitter bot files included in this repo. 
+
+app.py is the original file that uses oAuth1 to authorize the application to tweet using an input pin. 
+
+tweepy_bot.py is an updated bot that uses the Tweepy library for authentication. This version is less complicated and works better for daily deployment. 
+
 ## Contributions :wave:
 
 Contributions of any form are appreciated. Please follow the "fork and pull" Git workflow if you would like to create a new feature: 
@@ -43,6 +51,6 @@ ETH address: 0xdB69470D5e86Ae237721Cf1A292B80220d5575EA
 
 Solana address: 2L6j3wZXEByg8jycytabZitDh9VVMhKiMYv7EeJh6R2H
 
-## License :floppy_disk:
+## License :checkered_flag:
 
 Please include attribution to this repo if you fork or modify this repo in your own project. Thanks!
