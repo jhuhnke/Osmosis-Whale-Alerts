@@ -21,6 +21,7 @@ api = tweepy.API(auth)
 # Run SQL Query using ShroomDK 
 sql = f"""
 SELECT 
+    tx_id,
     block_timestamp,
     date_trunc('hour', block_timestamp) as time, 
     delegator_address as address, 
@@ -45,6 +46,7 @@ AND amount_usd >= 10000
 UNION 
 
 SELECT 
+   tx_id, 
    block_timestamp,
    date_trunc('hour', block_timestamp) as time, 
    liquidity_provider_address as address, 
@@ -69,6 +71,7 @@ AND amount_usd >= 10000
 UNION
 
 SELECT 
+   tx_id,
    block_timestamp,
    date_trunc('hour', block_timestamp) as time, 
    locker_address as address, 
@@ -93,6 +96,7 @@ AND amount_usd >= 10000
 UNION 
 
 SELECT 
+   tx_id,
    block_timestamp,
    date_trunc('hour', block_timestamp) as time, 
    delegator_address as address, 
@@ -117,6 +121,7 @@ AND amount_usd >= 10000
 UNION 
 
 SELECT 
+   tx_id,
    block_timestamp,
    date_trunc('hour', block_timestamp) as time, 
    delegator_address as address, 
@@ -141,6 +146,7 @@ AND amount_usd >= 10000
 UNION 
 
 SELECT 
+   tx_id,
    block_timestamp,
    date_trunc('hour', block_timestamp) as time, 
    trader as address, 
@@ -167,6 +173,7 @@ AND amount_usd >= 10000
 UNION 
 
 SELECT 
+   tx_id,
    block_timestamp,
    date_trunc('hour', block_timestamp) as time, 
    sender as address, 
@@ -193,35 +200,42 @@ query_result_set = sdk.query(sql)
 
 ## Sort the results and prep the tweet body 
 # Be sure to add replace the text of the with the text you wish to Tweet. You can also add parameters to post polls, quote Tweets, Tweet with reply settings, and Tweet to Super Followers in addition to other features.
-for record in query_result_set.records: 
-    blockts = record['block_timestamp']
-    address = record['address']
-    action = record['action']
-    token_amount = record['token_amount']
-    currency = record['project_name']
-    amount_usd = record['amount_usd']
-    to_currency = record['to_project_name']
-    to_token_amount = record['to_token_amount']
-    receiver = record['receiver']
-    time.sleep(10)
+for record in data: 
+    tx_id = record['TX_ID']
+    link = 'https://www.mintscan.io/osmosis/txs/'+tx_id
+    blockts = record['BLOCK_TIMESTAMP']
+    address = record['ADDRESS']
+    addr = address.split('1')[0]+'1...'+address[len(address) - 4:]
+    action = record['ACTION']
+    token_amount = record['TOKEN_AMOUNT']
+    currency = record['PROJECT_NAME']
+    amount_usd = record['AMOUNT_USD']
+    to_currency = record['TO_PROJECT_NAME']
+    to_token_amount = record['TO_TOKEN_AMOUNT']
+    receiver = record['RECEIVER']
+    if receiver is None: 
+        rec = 0
+    else:    
+        rec = receiver.split('1')[0]+'1...'+receiver[len(receiver) -4:]
+    time.sleep(20)
     if action == 'withdraw_rewards': 
-      payload = f"{address} withdrew {token_amount} {currency} (${amount_usd}) of staking rewards at {blockts} UTC"
+      payload = f"{addr} withdrew {token_amount} {currency} (${amount_usd}) of staking rewards at {blockts} UTC.\n{link}"
     elif action == 'redelegate': 
-      payload = f"{address} redelegated {token_amount} {currency} (${amount_usd}) at {blockts} UTC"
+      payload = f"{addr} redelegated {token_amount} {currency} (${amount_usd}) at {blockts} UTC.\n{link}"
     elif action == 'pool_exited': 
-      payload = f"{address} withdrew {token_amount} {currency} (${amount_usd}) from a liquidity pool at {blockts} UTC"
+      payload = f"{addr} withdrew {token_amount} {currency} (${amount_usd}) from a liquidity pool at {blockts} UTC.\n{link}"
     elif action == 'swap': 
-      payload = f"{address} swapped {token_amount} {currency} (${amount_usd}) for {to_token_amount} {to_currency} at {blockts} UTC"
+      payload = f"{addr} swapped {token_amount} {currency} (${amount_usd}) for {to_token_amount} {to_currency} at {blockts} UTC.\n{link}"
     elif action == 'pool_joined': 
-      payload = f"{address} added {token_amount} {currency} (${amount_usd}) to a liquidity pool at {blockts} UTC"
+      payload = f"{addr} added {token_amount} {currency} (${amount_usd}) to a liquidity pool at {blockts} UTC.\n{link}"
     elif action == 'transfer': 
-      payload = f"{address} transferred {token_amount} {currency} (${amount_usd}) to {receiver} at {blockts} UTC"
+      payload = f"{addr} transferred {token_amount} {currency} (${amount_usd}) to {rec} at {blockts} UTC.\n{link}"
     elif action == 'delegate': 
-      payload = f"{address} delegated {token_amount} {currency} (${amount_usd}) at {blockts} UTC"
+      payload = f"{addr} delegated {token_amount} {currency} (${amount_usd}) at {blockts} UTC.\n{link}"
     elif action == 'claim': 
-      payload = f"{address} claimed {token_amount} {currency} (${amount_usd}) at {blockts} UTC"
+      payload = f"{addr} claimed {token_amount} {currency} (${amount_usd}) at {blockts} UTC.\n{link}"
     else:
-      payload = f"{address} undelegated {token_amount} {currency} (${amount_usd}) at {blockts} UTC"
+      payload = f"{addr} undelegated {token_amount} {currency} (${amount_usd}) at {blockts} UTC.\n{link}"
 
     api.update_status(payload)
     print('Done!')
