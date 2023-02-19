@@ -19,11 +19,13 @@ This bot requires a Twitter Developer Account with Elevated Access. To request e
 
 ## Files :floppy_disk:
 
-There are two different Twitter bot files included in this repo. 
+There are three different Twitter bot files included in this repo. 
 
 app.py is the original file that uses oAuth1 to authorize the application to tweet using an input pin. 
 
 tweepy_bot.py is an updated bot that uses the Tweepy library for authentication. This version is less complicated and works better for daily deployment. 
+
+tweepy_bot2.py utilizes the Tweepy library for Twitter authentication and calls the Flipside Velocity / Gumby application API directly. This is a good way to work around degraded performance as the application is reading cached query results. 
 
 ## Contributions :wave:
 
